@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>OFF PANEL</title>
+    <style>
+        body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .kill-btn { 
+            padding: 30px 60px; font-size: 24px; font-weight: bold; color: white; 
+            background: linear-gradient(45deg, #ff0000, #990000); 
+            border: none; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.4);
+            transition: 0.3s;
+        }
+        .kill-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <button class="kill-btn" onclick="killSite()">ДЕАКТИВУВАТИ САЙТ</button>
+
+    <script>
+        async function killSite() {
+            const binId = '69932c9443b1c97be983a09f'; 
+            const apiKey = 'ВСТАВ_СВІЙ_MASTER_KEY_ТУТ'; // Твій ключ з JSONBin
+            
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-Master-Key': apiKey 
+                    },
+                    body: JSON.stringify({ active: false })
+                });
+                
+                if (res.ok) {
+                    alert('ГОТОВО! Тепер при вході на основний сайт буде кидати на ZARA.');
+                } else {
+                    alert('Помилка: Перевір, чи правильно вписаний Master Key.');
+                }
+            } catch (e) {
+                alert('Немає відповіді від сервера.');
+            }
+        }
+    </script>
+</body>
+</html>

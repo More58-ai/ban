@@ -2,46 +2,46 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>OFF PANEL</title>
+    <title>ADMIN PANEL - FIREBASE</title>
     <style>
-        body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        .kill-btn { 
-            padding: 30px 60px; font-size: 24px; font-weight: bold; color: white; 
-            background: linear-gradient(45deg, #ff0000, #990000); 
-            border: none; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.4);
-            transition: 0.3s;
-        }
-        .kill-btn:active { transform: scale(0.95); }
+        body { background: #0a0a0a; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        .kill-btn { padding: 30px 60px; font-size: 24px; background: red; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 0 30px rgba(255,0,0,0.5); }
+        .status { margin-top: 20px; color: #888; }
     </style>
 </head>
 <body>
-    <button class="kill-btn" onclick="killSite()">ДЕАКТИВУВАТИ САЙТ</button>
+    <button class="kill-btn" onclick="toggleSite(false)">ДЕАКТИВУВАТИ САЙТ</button>
+    <button style="margin-top: 20px; background: green;" class="kill-btn" onclick="toggleSite(true)">УВІМКНУТИ НАЗАД</button>
+    <div id="msg" class="status">Очікування дії...</div>
 
-    <script>
-        async function killSite() {
-            const binId = '69932c9443b1c97be983a09f'; 
-            const apiKey = 'ВСТАВ_СВІЙ_MASTER_KEY_ТУТ'; // Твій ключ з JSONBin
-            
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHuCboBzJT5Uc7Z6nLHekPoYFjO6GNHF8",
+            authDomain: "podzvoni-ee921.firebaseapp.com",
+            projectId: "podzvoni-ee921",
+            storageBucket: "podzvoni-ee921.firebasestorage.app",
+            messagingSenderId: "214583656309",
+            appId: "1:214583656309:web:789fb988cc4a775882dd3c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.toggleSite = async (status) => {
+            document.getElementById('msg').innerText = "Зміна статусу...";
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                    method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'X-Master-Key': apiKey 
-                    },
-                    body: JSON.stringify({ active: false })
+                await setDoc(doc(db, "settings", "siteStatus"), {
+                    active: status
                 });
-                
-                if (res.ok) {
-                    alert('ГОТОВО! Тепер при вході на основний сайт буде кидати на ZARA.');
-                } else {
-                    alert('Помилка: Перевір, чи правильно вписаний Master Key.');
-                }
+                document.getElementById('msg').innerText = status ? "Сайт ПРАЦЮЄ" : "Сайт ДЕАКТИВОВАНО (Редирект на Zara)";
+                alert("Готово!");
             } catch (e) {
-                alert('Немає відповіді від сервера.');
+                alert("Помилка бази: " + e.message);
             }
-        }
+        };
     </script>
 </body>
 </html>

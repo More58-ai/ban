@@ -2,17 +2,25 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>ADMIN PANEL - FIREBASE</title>
+    <title>CONTROL PANEL</title>
     <style>
-        body { background: #0a0a0a; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
-        .kill-btn { padding: 30px 60px; font-size: 24px; background: red; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 0 30px rgba(255,0,0,0.5); }
-        .status { margin-top: 20px; color: #888; }
+        body { background: #0a0a0a; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .container { text-align: center; background: #111; padding: 50px; border-radius: 30px; border: 1px solid #333; }
+        .btn { padding: 25px 50px; font-size: 20px; font-weight: bold; border: none; border-radius: 15px; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 300px; margin: 10px; }
+        .off { background: #ff0000; box-shadow: 0 0 30px rgba(255,0,0,0.3); }
+        .on { background: #00ff44; color: black; box-shadow: 0 0 30px rgba(0,255,68,0.2); }
+        .btn:hover { transform: scale(1.05); opacity: 0.9; }
+        .status-text { margin-bottom: 20px; font-size: 14px; color: #666; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <button class="kill-btn" onclick="toggleSite(false)">ДЕАКТИВУВАТИ САЙТ</button>
-    <button style="margin-top: 20px; background: green;" class="kill-btn" onclick="toggleSite(true)">УВІМКНУТИ НАЗАД</button>
-    <div id="msg" class="status">Очікування дії...</div>
+
+    <div class="container">
+        <div class="status-text">СИСТЕМА КЕРУВАННЯ ДОСТУПОМ</div>
+        <button class="btn off" onclick="setStatus(false)">ДЕАКТИВУВАТИ (ZARA)</button>
+        <br>
+        <button class="btn on" onclick="setStatus(true)">УВІМКНУТИ САЙТ</button>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
@@ -30,17 +38,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.toggleSite = async (status) => {
-            document.getElementById('msg').innerText = "Зміна статусу...";
+        window.setStatus = async (val) => {
             try {
-                await setDoc(doc(db, "settings", "siteStatus"), {
-                    active: status
-                });
-                document.getElementById('msg').innerText = status ? "Сайт ПРАЦЮЄ" : "Сайт ДЕАКТИВОВАНО (Редирект на Zara)";
-                alert("Готово!");
-            } catch (e) {
-                alert("Помилка бази: " + e.message);
-            }
+                await setDoc(doc(db, "settings", "siteStatus"), { active: val });
+                alert(val ? "Сайт активовано!" : "Сайт деактивовано! Редирект працює.");
+            } catch (e) { alert("Помилка: " + e.message); }
         };
     </script>
 </body>
